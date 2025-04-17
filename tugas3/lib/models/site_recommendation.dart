@@ -10,4 +10,4 @@ class SiteRecommendation {
     required this.link,
     this.isFavorite = false,
   });
-}
+} //tes pull
