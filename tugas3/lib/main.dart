@@ -33,8 +33,7 @@ class MyApp extends StatelessWidget {
       ),
       // Menambahkan routes
       routes: {
-        '/stopwatch': (context) =>
-            StopwatchScreen(), // Menambahkan rute untuk StopwatchScreen
+        '/stopwatch': (context) =>StopwatchScreen(), 
         '/jenis-bilangan': (context) => JenisBilanganScreen(),
         '/tracking-lbs': (context) => TrackingLbsScreen(),
         '/time-conversion': (context) => TimeConversionScreen(),
