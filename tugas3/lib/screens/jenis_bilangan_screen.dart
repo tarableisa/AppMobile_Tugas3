@@ -50,29 +50,62 @@ class _JenisBilanganScreenState extends State<JenisBilanganScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Jenis Bilangan")),
+      appBar: AppBar(
+        title: Text(
+          "Jenis Bilangan",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.blueAccent,
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: _controller,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: "Masukkan angka",
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                prefixIcon: Icon(Icons.calculate),
               ),
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: _cekBilangan,
-              child: Text("Cek"),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: Colors.blueAccent,
+              ),
+              child: Text(
+                "Cek",
+                style: TextStyle(fontSize: 16),
+              ),
             ),
-            SizedBox(height: 20),
-            Text(
-              _result,
-              style: TextStyle(fontSize: 18),
-            )
+            SizedBox(height: 30),
+            if (_result.isNotEmpty)
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                    child: Text(
+                      _result,
+                      style: TextStyle(fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              )
           ],
         ),
       ),

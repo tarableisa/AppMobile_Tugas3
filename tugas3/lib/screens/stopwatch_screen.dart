@@ -11,6 +11,9 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
   late Timer _timer;
   List<Duration> _laps = [];
 
+  bool _isPaused = false;
+  bool _hasStopped = false;
+
   @override
   void initState() {
     super.initState();
@@ -31,20 +34,40 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
     return "${twoDigits(d.inMinutes)}:${twoDigits(d.inSeconds % 60)}.${(d.inMilliseconds % 1000 ~/ 100)}";
   }
 
-  void _start() => _stopwatch.start();
+  void _startStop() {
+    if (_hasStopped) return; // jangan bisa start lagi setelah stop sebelum reset
 
-  void _pause() => _stopwatch.stop();
+    if (_stopwatch.isRunning || _isPaused) {
+      _stopwatch.stop();
+      _isPaused = false;
+      _hasStopped = true;
+    } else {
+      _stopwatch.start();
+      _hasStopped = false;
+    }
+    setState(() {});
+  }
+
+  void _pause() {
+    if (_stopwatch.isRunning) {
+      _stopwatch.stop();
+      _isPaused = true;
+      setState(() {});
+    }
+  }
 
   void _reset() {
     _stopwatch.reset();
     _laps.clear();
+    _isPaused = false;
+    _hasStopped = false;
     setState(() {});
   }
 
   void _lap() {
     if (_stopwatch.isRunning) {
       setState(() {
-        _laps.insert(0, _stopwatch.elapsed); // tambah ke awal
+        _laps.insert(0, _stopwatch.elapsed);
       });
     }
   }
@@ -61,23 +84,62 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
     final elapsed = _stopwatch.elapsed;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Stopwatch")),
+      appBar: AppBar(
+        title: Text("Stopwatch"),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Text(
-              _formatDuration(elapsed),
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+            Container(
+              margin: EdgeInsets.only(bottom: 20),
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(
+                child: Text(
+                  _formatDuration(elapsed),
+                  style: TextStyle(
+                    fontSize: 56,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800],
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            Wrap(
-              spacing: 10,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(onPressed: _start, child: Text("Start")),
-                ElevatedButton(onPressed: _pause, child: Text("Pause")),
-                ElevatedButton(onPressed: _reset, child: Text("Reset")),
-                ElevatedButton(onPressed: _lap, child: Text("Lap")),
+                _buildActionButton(
+                  (_stopwatch.isRunning || _isPaused) ? Icons.stop : Icons.play_arrow,
+                  (_stopwatch.isRunning || _isPaused) ? "Stop" : "Start",
+                  _startStop,
+                  (_stopwatch.isRunning || _isPaused) ? Colors.red : Colors.green,
+                  isEnabled: !_hasStopped || (_stopwatch.isRunning || _isPaused),
+                ),
+                _buildActionButton(
+                  _isPaused ? Icons.play_arrow : Icons.pause,
+                  _isPaused ? "Unpause" : "Pause",
+                  _pause,
+                  Colors.orange,
+                  isEnabled: _stopwatch.isRunning,
+                ),
+                _buildActionButton(
+                  Icons.flag,
+                  "Lap",
+                  _lap,
+                  Colors.blue,
+                  isEnabled: _stopwatch.isRunning,
+                ),
+                _buildActionButton(
+                  Icons.refresh,
+                  "Reset",
+                  _reset,
+                  Colors.grey,
+                ),
               ],
             ),
             SizedBox(height: 20),
@@ -89,7 +151,10 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
                       itemBuilder: (context, index) {
                         final lapTime = _laps[index];
                         return ListTile(
-                          leading: Text("Lap ${_laps.length - index}"),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blue,
+                            child: Text('${_laps.length - index}'),
+                          ),
                           title: Text(_formatDuration(lapTime)),
                         );
                       },
@@ -98,6 +163,30 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildActionButton(
+    IconData icon,
+    String label,
+    VoidCallback onPressed,
+    Color color, {
+    bool isEnabled = true,
+  }) {
+    return Column(
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: CircleBorder(),
+            padding: EdgeInsets.all(16),
+            backgroundColor: isEnabled ? color : Colors.grey[300],
+          ),
+          onPressed: isEnabled ? onPressed : null,
+          child: Icon(icon, size: 32, color: isEnabled ? Colors.white : Colors.grey),
+        ),
+        SizedBox(height: 4),
+        Text(label),
+      ],
     );
   }
 }

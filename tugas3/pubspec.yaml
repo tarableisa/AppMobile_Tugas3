@@ -34,7 +34,7 @@ dependencies:
   cached_network_image: ^3.3.1
   url_launcher: ^6.2.5
   shared_preferences: ^2.2.2
-  location: ^4.3.0 # Untuk mendapatkan lokasi pengguna
+  location: 5.0.0 # Untuk mendapatkan lokasi pengguna
   flutter_map: ^4.0.0 # Untuk menampilkan peta menggunakan OpenStreetMap
   latlong2: ^0.8.0 # Untuk tipe data LatLng
 

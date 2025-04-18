@@ -51,19 +51,25 @@ class _TrackingLbsScreenState extends State<TrackingLbsScreen> {
 
     setState(() {
       _locationStatus =
-          "Lokasi ditemukan: \nLat: ${_locationData.latitude}, Long: ${_locationData.longitude}";
+          "Lokasi ditemukan:\nLat: ${_locationData.latitude}, Long: ${_locationData.longitude}";
       _initialPosition =
           LatLng(_locationData.latitude!, _locationData.longitude!);
     });
 
-    _mapController.move(
-        _initialPosition, 15.0); // Memindahkan peta ke lokasi pengguna
+    _mapController.move(_initialPosition, 15.0);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Tracking Lokasi")),
+      appBar: AppBar(
+        title: Text(
+          "Tracking Lokasi",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.blueAccent,
+        elevation: 0,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -74,7 +80,6 @@ class _TrackingLbsScreenState extends State<TrackingLbsScreen> {
                 zoom: 15.0,
               ),
               children: [
-                // Ganti 'layers' menjadi 'children'
                 TileLayer(
                   urlTemplate:
                       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -101,15 +106,34 @@ class _TrackingLbsScreenState extends State<TrackingLbsScreen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                Text(
-                  _locationStatus,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      _locationStatus,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 15),
                 ElevatedButton(
                   onPressed: _getLocation,
-                  child: Text("Cek Lokasi Saya"),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: Colors.blueAccent,
+                  ),
+                  child: Text(
+                    "Cek Lokasi Saya",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ],
             ),

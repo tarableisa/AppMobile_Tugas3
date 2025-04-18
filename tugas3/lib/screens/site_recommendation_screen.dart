@@ -60,30 +60,60 @@ class _SiteRecommendationScreenState extends State<SiteRecommendationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Daftar Situs Rekomendasi")),
+      appBar: AppBar(
+        title: Text(
+          "Daftar Situs Rekomendasi",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         itemCount: sites.length,
         itemBuilder: (context, index) {
           final site = sites[index];
           return Card(
-            margin: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 3,
+            margin: const EdgeInsets.symmetric(vertical: 8),
             child: ListTile(
-              leading: CachedNetworkImage(
-                imageUrl: site.imageUrl,
-                width: 50,
-                height: 50,
-                placeholder: (context, url) =>
-                    CircularProgressIndicator(strokeWidth: 2),
-                errorWidget: (context, url, error) => Icon(Icons.broken_image),
-              ),
-              title: Text(site.name),
-              subtitle: Text(site.link),
-              trailing: IconButton(
-                icon: Icon(
-                  site.isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: site.isFavorite ? Colors.red : null,
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: site.imageUrl,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      CircularProgressIndicator(strokeWidth: 2),
+                  errorWidget: (context, url, error) =>
+                      Icon(Icons.broken_image, size: 40),
                 ),
-                onPressed: () => _toggleFavorite(site),
+              ),
+              title: Text(
+                site.name,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                site.link,
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              trailing: AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
+                child: IconButton(
+                  key: ValueKey(site.isFavorite),
+                  icon: Icon(
+                    site.isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: site.isFavorite ? Colors.red : Colors.grey,
+                  ),
+                  onPressed: () => _toggleFavorite(site),
+                ),
               ),
               onTap: () => _launchURL(site.link),
             ),
