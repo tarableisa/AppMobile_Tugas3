@@ -65,7 +65,7 @@ class _TrackingLbsScreenState extends State<TrackingLbsScreen> {
       appBar: AppBar(
         title: Text(
           "Tracking Lokasi",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
@@ -132,7 +132,7 @@ class _TrackingLbsScreenState extends State<TrackingLbsScreen> {
                   ),
                   child: Text(
                     "Cek Lokasi Saya",
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ],

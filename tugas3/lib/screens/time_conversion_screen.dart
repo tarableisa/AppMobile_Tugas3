@@ -76,7 +76,7 @@ class _TimeConversionScreenState extends State<TimeConversionScreen> {
       appBar: AppBar(
         title: Text(
           "Konversi Waktu",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
@@ -110,10 +110,10 @@ class _TimeConversionScreenState extends State<TimeConversionScreen> {
                   ),
                   elevation: 4,
                 ),
-                icon: Icon(Icons.calculate),
+                icon: Icon(Icons.calculate, color: Colors.white,),
                 label: Text(
                   'Konversi',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
               if (_result.isNotEmpty)

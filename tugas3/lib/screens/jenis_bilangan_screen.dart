@@ -100,25 +100,15 @@ class _JenisBilanganScreenState extends State<JenisBilanganScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text("Jenis Bilangan",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: BackButton(color: Colors.white),
+      title: Text(
+          "Jenis Bilangan",
+          style: TextStyle(color: Colors.white),
+        ),
+      backgroundColor: Colors.blueAccent,
       ),
+
       body: Stack(
         children: [
-          // Background gradient statis
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blueAccent, Colors.purpleAccent.shade100],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-          ),
-
           // Konten utama
           SafeArea(
             child: SingleChildScrollView(
@@ -147,10 +137,10 @@ class _JenisBilanganScreenState extends State<JenisBilanganScreen> {
                   SizedBox(height: 20),
                   ElevatedButton.icon(
                     onPressed: _cekBilangan,
-                    icon: Icon(Icons.search),
-                    label: Text("Cek"),
+                    icon: Icon(Icons.search, color: Colors.white),
+                    label: Text("Cek", style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 230, 215, 255),
+                      backgroundColor: Colors.blueAccent,
                       padding: EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),

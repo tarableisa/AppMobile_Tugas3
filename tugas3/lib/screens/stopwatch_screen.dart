@@ -85,9 +85,12 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Stopwatch"),
-        backgroundColor: Colors.blueAccent,
-      ),
+      title: Text(
+          "Stopwatch",
+          style: TextStyle(color: Colors.white),
+        ),
+      backgroundColor: Colors.blueAccent,
+    ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

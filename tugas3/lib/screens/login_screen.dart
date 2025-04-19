@@ -45,10 +45,13 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock_outline, size: 80, color: Colors.blueAccent),
+              Image.asset(
+              'assets/images/logo.png',
+                height: 260,
+              ),
               const SizedBox(height: 20),
               Text(
-                "Welcome Back",
+                "Welcome!",
                 style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -107,6 +110,7 @@ class LoginScreen extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),

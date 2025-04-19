@@ -50,8 +50,8 @@ class BantuanScreen extends StatelessWidget {
             Center(
               child: ElevatedButton.icon(
                 onPressed: () => _logout(context),
-                icon: Icon(Icons.logout),
-                label: Text("Logout"),
+                icon: Icon(Icons.logout, color: Colors.white),
+                label: Text("Logout",style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                 ),

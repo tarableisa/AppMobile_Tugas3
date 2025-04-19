@@ -63,7 +63,7 @@ class _SiteRecommendationScreenState extends State<SiteRecommendationScreen> {
       appBar: AppBar(
         title: Text(
           "Daftar Situs Rekomendasi",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
       ),

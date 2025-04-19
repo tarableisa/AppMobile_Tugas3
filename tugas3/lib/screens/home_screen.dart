@@ -55,54 +55,90 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _selectedIndex = index);
   }
 
-  Widget _buildMainMenu() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: GridView.builder(
-        itemCount: menuItems.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1,
-        ),
-        itemBuilder: (context, i) {
-          final item = menuItems[i];
-          return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, item['route']),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
-                    blurRadius: 6,
-                    offset: Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(item['icon'], size: 40, color: Colors.blueAccent),
-                  SizedBox(height: 12),
-                  Text(
-                    item['title'],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
+  String _getSubtitle(String title) {
+  switch (title) {
+    case 'Stopwatch':
+      return 'Hitung waktu mundur';
+    case 'Jenis Bilangan':
+      return 'Cek jenis angka';
+    case 'Tracking LBS':
+      return 'Lacak lokasi kamu';
+    case 'Konversi Waktu':
+      return 'Ubah format waktu';
+    case 'Situs Rekomendasi':
+      return 'Link bermanfaat';
+    default:
+      return '';
   }
+}
+
+  Widget _buildMainMenu() {
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: GridView.builder(
+      itemCount: menuItems.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.2,
+      ),
+      itemBuilder: (context, i) {
+        final item = menuItems[i];
+        final String subtitle = _getSubtitle(item['title']);
+
+        return GestureDetector(
+          onTap: () => Navigator.pushNamed(context, item['route']),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 8,
+                  offset: Offset(2, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    item['icon'],
+                    size: 36,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  item['title'],
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 
   void _logout(BuildContext ctx) async {
     await _session.logout();
@@ -161,15 +197,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        elevation: 0,
-        title: Text(tabTitles[_selectedIndex],
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.logout), onPressed: () => _logout(context)),
-        ],
-      ),
+      backgroundColor: Colors.blueAccent,
+      elevation: 0,
+      title: Text(
+      tabTitles[_selectedIndex],
+      style: TextStyle(
+      fontWeight: FontWeight.bold,
+      color: Colors.white, // ubah jadi putih
+    ),
+  ),
+    actions: [
+    IconButton(
+      icon: Icon(Icons.logout, color: Colors.white), // ubah jadi putih
+      onPressed: () => _logout(context),
+    ),
+  ],
+),
+
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,

@@ -22,59 +22,66 @@ class AnggotaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: anggota.length,
-      itemBuilder: (context, index) {
-        final person = anggota[index];
-        return Card(
-          elevation: 5,
-          margin: const EdgeInsets.only(bottom: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            children: [
-              // Foto anggota dalam bentuk persegi
-              Container(
-                width: double.infinity, // Lebar mengikuti ukuran layar
-                height: 200, // Tinggi tetap 200
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: AssetImage(person['image']!),
-                    fit: BoxFit.cover,
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(249, 250, 251, 252),
+      body: Container(
+         // Matching the yellow from the first image
+        child: ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: anggota.length,
+          itemBuilder: (context, index) {
+            final person = anggota[index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 70,
+                    height: 70,
+                    margin: EdgeInsets.all(12),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(35),
+                      child: Image.asset(
+                        person['image']!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              // Nama dan NIM
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      person['name']!,
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          person['name']!,
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          person['nim']!,
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      person['nim']!,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(12),
+                    
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 }
