@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TimeConversionScreen extends StatefulWidget {
   @override
@@ -14,23 +15,42 @@ class _TimeConversionScreenState extends State<TimeConversionScreen> {
     try {
       final input = _yearController.text.trim();
 
-      if (input.isEmpty || !RegExp(r'^\d+$').hasMatch(input)) {
-        _showSnackbar('Masukkan angka yang valid!');
-        return;
+      if (input.contains('.')) {
+        // Gunakan double untuk angka desimal
+        final double year = double.parse(input);
+        final double hours = year * 365.25 * 24;
+        final double minutes = hours * 60;
+        final double seconds = minutes * 60;
+
+        setState(() {
+          _result = '$year tahun =\n'
+              '${hours.toStringAsFixed(2)} jam\n'
+              '${minutes.toStringAsFixed(2)} menit\n'
+              '${seconds.toStringAsFixed(2)} detik';
+        });
+      } else {
+        // Gunakan BigInt untuk angka bulat besar
+        final BigInt year = BigInt.parse(input);
+        final BigInt hours =
+            year * BigInt.from(36525) ~/ BigInt.from(100) * BigInt.from(24);
+        final BigInt minutes = hours * BigInt.from(60);
+        final BigInt seconds = minutes * BigInt.from(60);
+
+        setState(() {
+          _result = '$year tahun =\n$hours jam\n$minutes menit\n$seconds detik';
+        });
       }
-
-      final BigInt year = BigInt.parse(input);
-      final BigInt hours =
-          year * BigInt.from(36525) ~/ BigInt.from(100) * BigInt.from(24);
-      final BigInt minutes = hours * BigInt.from(60);
-      final BigInt seconds = minutes * BigInt.from(60);
-
-      setState(() {
-        _result = '$year tahun =\n$hours jam\n$minutes menit\n$seconds detik';
-      });
     } catch (e) {
-      _showSnackbar('Terjadi kesalahan dalam konversi.');
+      _showSnackbar(
+          'Input bukan angka yang valid, silahkan input angka yang valid!');
     }
+  }
+
+  void _clearInput() {
+    setState(() {
+      _yearController.clear();
+      _result = '';
+    });
   }
 
   void _showSnackbar(String message) {
@@ -39,22 +59,25 @@ class _TimeConversionScreenState extends State<TimeConversionScreen> {
     );
   }
 
-  Widget _buildResultRow(IconData icon, String label, String value) {
+  Widget _buildResultRow(
+      IconData icon, String label, String value, Color color) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(icon, color: Colors.blueAccent),
+            radius: 22,
+            backgroundColor: color.withOpacity(0.15),
+            child: Icon(icon, color: color),
           ),
-          SizedBox(width: 12),
+          SizedBox(width: 14),
           Expanded(
             child: Text(
               '$value $label',
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
+                color: color,
               ),
             ),
           )
@@ -71,14 +94,17 @@ class _TimeConversionScreenState extends State<TimeConversionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F3FF),
+      backgroundColor: const Color(0xFFEEF2FF),
       appBar: AppBar(
-        title: Text(
-          "Konversi Waktu",
+        title: const Text(
+          "Stopwatch",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
-        elevation: 0,
+        actions: [
+          Icon(Icons.access_time, color: Colors.white),
+          SizedBox(width: 12),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -93,44 +119,57 @@ class _TimeConversionScreenState extends State<TimeConversionScreen> {
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.calendar_today),
                   labelText: 'Masukkan jumlah tahun',
+                  filled: true,
+                  fillColor: Colors.white,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _convertTime,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _convertTime,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF5B67F1),
+                        minimumSize: Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 6,
+                      ),
+                      icon: Icon(Icons.calculate, color: Colors.white),
+                      label: Text(
+                        'Konversi',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
                   ),
-                  elevation: 4,
-                ),
-                icon: Icon(Icons.calculate, color: Colors.white,),
-                label: Text(
-                  'Konversi',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+                  SizedBox(width: 12),
+                  if (_result.isNotEmpty)
+                    IconButton(
+                      icon: Icon(Icons.clear, color: Colors.redAccent),
+                      tooltip: 'Bersihkan',
+                      onPressed: _clearInput,
+                    ),
+                ],
               ),
               if (_result.isNotEmpty)
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: 20),
-                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.only(top: 24),
+                  padding: EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFa1c4fd), Color(0xFFc2e9fb)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
+                    color:
+                        Color(0xFFE3E7FF), // Warna solid pastel biru keunguan
+                    borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
-                        blurRadius: 10,
+                        blurRadius: 8,
                         offset: Offset(2, 4),
                       ),
                     ],
@@ -142,21 +181,22 @@ class _TimeConversionScreenState extends State<TimeConversionScreen> {
                         child: Text(
                           '${_yearController.text} Tahun =',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
+                            color: Colors.indigo[900],
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
-                      _buildResultRow(
-                          Icons.schedule, "Jam", _extractPart(_result, 1)),
-                      _buildResultRow(
-                          Icons.timelapse, "Menit", _extractPart(_result, 2)),
-                      _buildResultRow(
-                          Icons.av_timer, "Detik", _extractPart(_result, 3)),
+                      SizedBox(height: 24),
+                      _buildResultRow(Icons.schedule, "Jam",
+                          _extractPart(_result, 1), Colors.indigo),
+                      _buildResultRow(Icons.timelapse, "Menit",
+                          _extractPart(_result, 2), Colors.teal),
+                      _buildResultRow(Icons.av_timer, "Detik",
+                          _extractPart(_result, 3), Colors.deepOrange),
                     ],
                   ),
-                ),
+                )
             ],
           ),
         ),

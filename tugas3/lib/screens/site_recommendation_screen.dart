@@ -10,7 +10,7 @@ class SiteRecommendationScreen extends StatefulWidget {
 }
 
 class _SiteRecommendationScreenState extends State<SiteRecommendationScreen> {
-  final List<SiteRecommendation> sites = [
+  final List<SiteRecommendation> allSites = [
     SiteRecommendation(
       name: 'Flutter',
       imageUrl: 'https://flutter.dev/images/flutter-logo-sharing.png',
@@ -36,10 +36,38 @@ class _SiteRecommendationScreenState extends State<SiteRecommendationScreen> {
     ),
   ];
 
+  List<SiteRecommendation> filteredSites = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredSites = allSites;
+  }
+
+  void _filterSites(String query) {
+    setState(() {
+      filteredSites = allSites
+          .where((site) =>
+              site.name.toLowerCase().contains(query.toLowerCase()) ||
+              site.link.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   void _toggleFavorite(SiteRecommendation site) {
     setState(() {
       site.isFavorite = !site.isFavorite;
     });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(site.isFavorite
+            ? '${site.name} ditambahkan ke favorit!'
+            : '${site.name} dihapus dari favorit.'),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _launchURL(String url) async {
@@ -61,64 +89,94 @@ class _SiteRecommendationScreenState extends State<SiteRecommendationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Daftar Situs Rekomendasi",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
+        actions: [
+          Icon(Icons.link, color: Colors.white),
+          SizedBox(width: 12),
+        ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-        itemCount: sites.length,
-        itemBuilder: (context, index) {
-          final site = sites[index];
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 3,
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            child: ListTile(
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: site.imageUrl,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      CircularProgressIndicator(strokeWidth: 2),
-                  errorWidget: (context, url, error) =>
-                      Icon(Icons.broken_image, size: 40),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: TextField(
+              onChanged: _filterSites,
+              decoration: InputDecoration(
+                hintText: 'Cari situs...',
+                prefixIcon: Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
                 ),
               ),
-              title: Text(
-                site.name,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                site.link,
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-              trailing: AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
-                transitionBuilder: (child, animation) =>
-                    ScaleTransition(scale: animation, child: child),
-                child: IconButton(
-                  key: ValueKey(site.isFavorite),
-                  icon: Icon(
-                    site.isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: site.isFavorite ? Colors.red : Colors.grey,
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: filteredSites.length,
+              itemBuilder: (context, index) {
+                final site = filteredSites[index];
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () => _toggleFavorite(site),
-                ),
-              ),
-              onTap: () => _launchURL(site.link),
+                  elevation: 3,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImage(
+                        imageUrl: site.imageUrl,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(strokeWidth: 2),
+                        errorWidget: (context, url, error) =>
+                            Icon(Icons.broken_image, size: 40),
+                      ),
+                    ),
+                    title: Text(
+                      site.name,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      site.link,
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          key: ValueKey(site.isFavorite),
+                          icon: Icon(
+                            site.isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: site.isFavorite ? Colors.red : Colors.grey,
+                          ),
+                          onPressed: () => _toggleFavorite(site),
+                        ),
+                        Icon(Icons.chevron_right, color: Colors.grey[400]),
+                      ],
+                    ),
+                    onTap: () => _launchURL(site.link),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

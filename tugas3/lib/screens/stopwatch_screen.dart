@@ -88,11 +88,15 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Stopwatch",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
+        actions: [
+          Icon(Icons.timer, color: Colors.white),
+          SizedBox(width: 12),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -128,7 +132,8 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
                   (_stopwatch.isRunning || _isPaused)
                       ? Colors.red
                       : Colors.green,
-                  isEnabled: !_hasStopped || (_stopwatch.isRunning || _isPaused),
+                  isEnabled:
+                      !_hasStopped || (_stopwatch.isRunning || _isPaused),
                 ),
                 _buildActionButton(
                   _isPaused ? Icons.play_arrow : Icons.pause,
@@ -192,7 +197,8 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
             backgroundColor: isEnabled ? color : Colors.grey[300],
           ),
           onPressed: isEnabled ? onPressed : null,
-          child: Icon(icon, size: 32, color: isEnabled ? Colors.white : Colors.grey),
+          child: Icon(icon,
+              size: 32, color: isEnabled ? Colors.white : Colors.grey),
         ),
         SizedBox(height: 4),
         Text(label),

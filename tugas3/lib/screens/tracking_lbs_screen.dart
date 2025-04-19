@@ -63,12 +63,15 @@ class _TrackingLbsScreenState extends State<TrackingLbsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Tracking Lokasi",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
-        elevation: 0,
+        actions: [
+          Icon(Icons.location_on, color: Colors.white),
+          SizedBox(width: 12),
+        ],
       ),
       body: Column(
         children: [

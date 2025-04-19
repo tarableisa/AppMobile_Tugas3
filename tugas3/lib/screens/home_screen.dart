@@ -15,7 +15,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final SessionManager _session = SessionManager();
 
   final List<Map<String, dynamic>> menuItems = [
-    {'title': 'Stopwatch', 'icon': Icons.timer, 'route': '/stopwatch'},
+    {'title': 'Stopwatch', 
+    'icon': Icons.timer, 
+    'route': '/stopwatch'},
     {
       'title': 'Jenis Bilangan',
       'icon': Icons.calculate,

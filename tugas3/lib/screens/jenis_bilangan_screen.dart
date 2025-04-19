@@ -31,7 +31,8 @@ class _JenisBilanganScreenState extends State<JenisBilanganScreen> {
 
     final double? value = double.tryParse(input);
     if (value == null) {
-      _showSnackBar("Input bukan angka yang valid.");
+      _showSnackBar(
+          "Input bukan angka yang valid, silahkan input angka yang valid!.");
       return;
     }
 
@@ -100,13 +101,16 @@ class _JenisBilanganScreenState extends State<JenisBilanganScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-      title: Text(
+        title: const Text(
           "Jenis Bilangan",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-      backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.blueAccent,
+        actions: [
+          Icon(Icons.calculate, color: Colors.white),
+          SizedBox(width: 12),
+        ],
       ),
-
       body: Stack(
         children: [
           // Konten utama
