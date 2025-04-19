@@ -23,7 +23,7 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
 
   void _startTimer() {
     _timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
-      if (_stopwatch.isRunning) {
+      if (_stopwatch.isRunning || _isPaused) {
         setState(() {});
       }
     });
@@ -35,7 +35,7 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
   }
 
   void _startStop() {
-    if (_hasStopped) return; // jangan bisa start lagi setelah stop sebelum reset
+    if (_hasStopped) return;
 
     if (_stopwatch.isRunning || _isPaused) {
       _stopwatch.stop();
@@ -52,8 +52,11 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
     if (_stopwatch.isRunning) {
       _stopwatch.stop();
       _isPaused = true;
-      setState(() {});
+    } else if (_isPaused) {
+      _stopwatch.start();
+      _isPaused = false;
     }
+    setState(() {});
   }
 
   void _reset() {
@@ -85,12 +88,12 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-      title: Text(
+        title: Text(
           "Stopwatch",
           style: TextStyle(color: Colors.white),
         ),
-      backgroundColor: Colors.blueAccent,
-    ),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -117,10 +120,14 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildActionButton(
-                  (_stopwatch.isRunning || _isPaused) ? Icons.stop : Icons.play_arrow,
+                  (_stopwatch.isRunning || _isPaused)
+                      ? Icons.stop
+                      : Icons.play_arrow,
                   (_stopwatch.isRunning || _isPaused) ? "Stop" : "Start",
                   _startStop,
-                  (_stopwatch.isRunning || _isPaused) ? Colors.red : Colors.green,
+                  (_stopwatch.isRunning || _isPaused)
+                      ? Colors.red
+                      : Colors.green,
                   isEnabled: !_hasStopped || (_stopwatch.isRunning || _isPaused),
                 ),
                 _buildActionButton(
@@ -128,7 +135,7 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
                   _isPaused ? "Unpause" : "Pause",
                   _pause,
                   Colors.orange,
-                  isEnabled: _stopwatch.isRunning,
+                  isEnabled: _stopwatch.isRunning || _isPaused,
                 ),
                 _buildActionButton(
                   Icons.flag,
